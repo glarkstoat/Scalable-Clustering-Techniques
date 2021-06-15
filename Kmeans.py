@@ -17,15 +17,17 @@ class Kmeans:
         self.losses = []
         self.errors = []
         
-    def generateCenters(self, data):
+    def generateCenters(self, data, random=False):
         """ Generates initial centers as first k points. """        
-        # indices = np.random.choice(range(len(data)), self.k)
-        # return data[indices]
         
-        return data[:self.k] 
+        if random:
+            indices = np.random.choice(range(len(data)), self.k, raplace=False)
+            return data[indices]
+        else:    
+            return data[:self.k] 
         
     def fit(self, data):
-        self.centers = self.generateCenters(data)
+        self.centers = self.generateCenters(data, random=True)
         self.n = data.shape[0]
         distances = np.zeros((self.n,self.k))
 

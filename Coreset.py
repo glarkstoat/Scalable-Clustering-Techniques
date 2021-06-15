@@ -13,19 +13,16 @@ class Coreset:
         # calculates the q for every sample in the dataset
 
         self.q = np.zeros(self.X.shape[0])
-        #q_sum = np.sum(cdist(self.X, self.mu, metric='sqeuclidean'))
         q_sum = np.sum(np.linalg.norm(self.X - self.mu)**2)
-        print(q_sum)  
-        X_abs = np.linalg.norm(self.X, ord=np.inf)
+ 
+        X_abs = np.linalg.norm(self.X)**2
 
         for i, x in tqdm(enumerate(self.X)):
             # calculates the q(x)
 
-            q = 1.0 / (2.0 * X_abs) + 1.0 / 2.0 * \
-            (np.linalg.norm(x - self.mu)**2 / q_sum)
-            self.q[i] = q
+            q = (1/X_abs) + ((np.linalg.norm(x - self.mu)**2 / q_sum))
 
-        self.q = self.q.flatten()
+            self.q[i] = q
         
 
     def get_coreset(self, m):

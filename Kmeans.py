@@ -1,13 +1,9 @@
+from copy import deepcopy
 from enum import IntEnum
 
 import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from sklearn.metrics import normalized_mutual_info_score as NMI
-from tqdm import tqdm
-from copy import deepcopy
-from datetime import datetime
 from scipy.spatial.distance import cdist
+from tqdm import tqdm
 
 
 class ClusterInitialization(IntEnum):
@@ -15,8 +11,7 @@ class ClusterInitialization(IntEnum):
     firstk = 1
     custom = 2
 
-    def get_centers(self, k=None, data=None, defined=None):
-        print(self, self.name, self.value)
+    def get_centers(self, k=None, data=None, custom_centers=None):
         if self.value == ClusterInitialization.random:
             if data is None or k is None:
                 raise ValueError
@@ -26,9 +21,9 @@ class ClusterInitialization(IntEnum):
                 raise ValueError
             return data[:k]
         if self.value == ClusterInitialization.custom:
-            if defined is None:
+            if custom_centers is None or len(custom_centers) != k:
                 raise ValueError
-            return defined
+            return custom_centers
 
 
 class Kmeans:
@@ -43,12 +38,9 @@ class Kmeans:
         self.losses = []
         self.errors = []
 
-    def fit(self, data, cluster_centers=None, init="random"):
-        if (cluster_centers is None) and (init == "random"):
-            cluster_centers = ClusterInitialization.random.get_centers(k=self.k, data=data)
-        if (cluster_centers is None) and (init == "firstk"):
-            cluster_centers = ClusterInitialization.firstk.get_centers(k=self.k, data=data)
-        self.centers = cluster_centers
+    def fit(self, data, cluster_initialization: ClusterInitialization = ClusterInitialization.random,
+            custom_cluster_centers=None):
+        self.centers = cluster_initialization.get_centers(k=self.k, data=data, custom_centers=custom_cluster_centers)
         self.n = data.shape[0]
 
         for _ in tqdm(range(self.max_iters)):
@@ -75,7 +67,7 @@ class Kmeans:
             error = np.linalg.norm(centers_updated - self.centers)
             self.errors.append(error)
 
-            # Convergence criterium. If errors are < tol, error small enough to be considered converged                 
+            # Convergence criterium. If errors are < tol, error small enough to be considered converged
             if error > self.tol:
                 self.centers = centers_updated
             else:

@@ -25,7 +25,7 @@ class Kmeans:
         return data[indices]
         
     def fit(self, data, cluster_centers=None):
-        self.centers = self.generateCenters(data, random=True) if cluster_centers is None else cluster_centers
+        self.centers = self.generateCenters(data) if cluster_centers is None else cluster_centers
         self.n = data.shape[0]
 
         for _ in tqdm(range(self.max_iters)): 

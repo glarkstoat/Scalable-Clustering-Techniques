@@ -32,3 +32,16 @@ class Coreset:
             C[i] = 1 / (m * self.q[idx]) * self.X[idx]
 
         return C, rnd_indices
+
+    
+    def get_m(self, k=153, eps=0.5, delta=0.5):
+
+        """
+        Returns the m using Theorem 2 of the paper.
+        Parameters:
+            k = Number of Clusters in the Data
+            eps = Float between (0, 1)
+            delta = Float between (0, 1)
+        """
+
+        return (self.X.shape[1] * k * np.log(k) + np.log(1/delta)) / eps**2

@@ -44,4 +44,4 @@ class Coreset:
             delta = Float between (0, 1)
         """
 
-        return (self.X.shape[1] * k * np.log(k) + np.log(1/delta)) / eps**2
+        return int((self.X.shape[1] * k * np.log(k) + np.log(1/delta)) / eps**2)

@@ -43,9 +43,11 @@ class Kmeans:
         self.losses = []
         self.errors = []
 
-    def fit(self, data, cluster_centers=None):
-        if cluster_centers is None:
+    def fit(self, data, cluster_centers=None, init="random"):
+        if (cluster_centers is None) and (init == "random"):
             cluster_centers = ClusterInitialization.random.get_centers(k=self.k, data=data)
+        if (cluster_centers is None) and (init == "firstk"):
+            cluster_centers = ClusterInitialization.firstk.get_centers(k=self.k, data=data)
         self.centers = cluster_centers
         self.n = data.shape[0]
 
@@ -65,14 +67,16 @@ class Kmeans:
             # Calculate mean of assigned points for every cluster and update cluster position
             for i in range(self.k):
                 if len(data[clusters == i]) == 0:  # no points were assigned to this cluster
-                    pass
+                    continue
                 else:
                     centers_updated[i] = np.mean(data[clusters == i], axis=0)
 
-            # Convergence criterium. If errors are < tol, error small enough to be considered converged                 
+            # Measures difference between updated and old cluster centers
             error = np.linalg.norm(centers_updated - self.centers)
+            self.errors.append(error)
+
+            # Convergence criterium. If errors are < tol, error small enough to be considered converged                 
             if error > self.tol:
-                self.errors.append(error)
                 self.centers = centers_updated
             else:
                 print("\nKmeans converged. Exiting loop.\n")

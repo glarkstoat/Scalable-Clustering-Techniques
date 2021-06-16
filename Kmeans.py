@@ -19,17 +19,13 @@ class Kmeans:
         self.losses = []
         self.errors = []
         
-    def generateCenters(self, data, random=False):
-        """ Generates initial centers as first k points. """        
+    def generateCenters(self, data):
+        """ Generates initial centers as first k points. """      
+        indices = np.random.choice(range(len(data)), self.k, replace=False)
+        return data[indices]
         
-        if random:
-            indices = np.random.choice(range(len(data)), self.k, replace=False)
-            return data[indices]
-        else:    
-            return data[:self.k] 
-        
-    def fit(self, data):
-        self.centers = self.generateCenters(data, random=True)
+    def fit(self, data, cluster_centers=None):
+        self.centers = self.generateCenters(data, random=True) if cluster_centers is None else cluster_centers
         self.n = data.shape[0]
 
         for _ in tqdm(range(self.max_iters)): 

@@ -4,6 +4,12 @@ from tqdm import tqdm
 class Coreset:
     
     def __init__(self, X):
+        """
+        Class to calculate the Coreset for a given Dataset
+        Parameters:
+            X = Dataset (Array of size n x m)
+        """
+
         self.X = X
         self.mu = np.mean(X, axis=0)
 
@@ -22,13 +28,22 @@ class Coreset:
         
 
     def get_coreset(self, m):
+        """
+        Returns the coreset, the randomly chosen indices for the samples
+        and generates the weights to use in sklearn.
+        Parameters:
+            m = number of samples in the coreset
+        """
+
         # chooses m random samples 
         rnd_indices = np.random.choice(self.X.shape[0], m, p=self.q)
 
         # calculates the m weighted, randomly selected points
         C = np.zeros((m, self.X.shape[1]))
+        self.weights = []
 
         for i, idx in enumerate(rnd_indices):
+            self.weights.append(1 / (m * self.q[idx]))
             C[i] = 1 / (m * self.q[idx]) * self.X[idx]
 
         return C, rnd_indices

@@ -20,7 +20,7 @@ class Coreset:
         self.q = np.zeros(self.X.shape[0])
         q_sum = np.sum(np.linalg.norm(self.X - self.mu)**2)
 
-        for i, x in tqdm(enumerate(self.X)):
+        for i, x in enumerate(self.X):
             # calculates the q(x)
             q = 0.5 * (1/self.X.shape[0]) + 0.5 * (np.linalg.norm(x - self.mu)**2 / q_sum)
 

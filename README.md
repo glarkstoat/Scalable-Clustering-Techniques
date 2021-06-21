@@ -11,3 +11,4 @@
 - Tqdm
 
 ### Description
+Simply execute the ipynb files.

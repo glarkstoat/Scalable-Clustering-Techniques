@@ -11,4 +11,4 @@
 - Tqdm
 
 ### Description
-Simply execute the ipynb files.
+Place the bio_train.csv file in a folder called 'data' and simply execute the ipynb files.
